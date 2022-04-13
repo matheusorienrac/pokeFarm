@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pokedex</title>
+    <title>pokefarm</title>
     <style>
         html, body, p {
             padding: 0;
@@ -31,10 +31,10 @@
 </head>
 <body>
 <p class="link"><a href="/logout">Logout</a></p>
-<p>My Pokedex<p>
+<p>My pokefarm<p>
 <p>
 {{range .}}
-    <a href="/pokedex/read?ID={{.ID}}" target="pokemonDetails" ><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png"/></a>
+    <a href="/pokefarm/read?ID={{.pokefarmID}}" target="pokemonDetails" ><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png"/></a>
 {{end}}
 </p>
 <iframe name="pokemonDetails"
@@ -43,8 +43,8 @@
     height="100">
 </iframe>
 
-<p class="link"><a href="/pokedex/create">Insert A Pokemon</a></p>
-<p class="link"><a href="/pokedex/delete">Delete A Pokemon</a></p>
-<p class="link"><a href="/pokedex/update">Update a pokemon</a></p>
+<p class="link"><a href="/pokefarm/create">Insert A Pokemon</a></p>
+<p class="link"><a href="/pokefarm/delete">Delete A Pokemon</a></p>
+<p class="link"><a href="/pokefarm/update">Update a pokemon</a></p>
 </body>
 </html>

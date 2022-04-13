@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	uuid "github.com/satori/go.uuid"
@@ -28,7 +29,7 @@ func signup(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-
+	println(len(hashPassword))
 	q := `
 		INSERT INTO USERS (USERNAME, PASSWORD)
 		VALUES ($1, $2);
@@ -87,13 +88,14 @@ func login(res http.ResponseWriter, req *http.Request) {
 			HttpOnly: true,
 		}
 		http.SetCookie(res, cookie)
-		_, err = db.Exec("INSERT INTO SESSIONS(sid, username) VALUES ($1, $2)")
+		_, err = db.Exec("INSERT INTO SESSIONS(sid, username) VALUES ($1, $2)", cookie.Value, username)
 		if err != nil {
 			http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			fmt.Println("query SPECIAL")
 			return
 		}
 	}
-	http.Redirect(res, req, "/pokedex", http.StatusSeeOther)
+	http.Redirect(res, req, "/pokefarm", http.StatusSeeOther)
 
 }
 
@@ -112,5 +114,5 @@ func logout(res http.ResponseWriter, req *http.Request) {
 		MaxAge: -1,
 	}
 	http.SetCookie(res, cookie)
-	http.Redirect(res, req, "/index", http.StatusSeeOther)
+	http.Redirect(res, req, "/", http.StatusSeeOther)
 }
