@@ -91,7 +91,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 		_, err = db.Exec("INSERT INTO SESSIONS(sid, username) VALUES ($1, $2)", cookie.Value, username)
 		if err != nil {
 			http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			fmt.Println("query SPECIAL")
+			fmt.Println(err.Error())
 			return
 		}
 	}
@@ -100,19 +100,32 @@ func login(res http.ResponseWriter, req *http.Request) {
 }
 
 func logout(res http.ResponseWriter, req *http.Request) {
-	cookie, _ := req.Cookie("session")
-
-	// delete session from session table
-	_, err := db.Exec("DELETE FROM SESSIONS WHERE SID = $1", cookie.Value)
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
+	cookie, err := req.Cookie("session")
+	// means we have a cookie, so we should delete it
+	if err == nil {
+		// delete session from session table
+		_, err := db.Exec("DELETE FROM SESSIONS WHERE SID = $1", cookie.Value)
+		if err != nil {
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+		}
+		// delete cookie
+		cookie = &http.Cookie{
+			Name:   "session",
+			Value:  "",
+			MaxAge: -1,
+		}
+		http.SetCookie(res, cookie)
 	}
-	// delete cookie
-	cookie = &http.Cookie{
-		Name:   "session",
-		Value:  "",
-		MaxAge: -1,
-	}
-	http.SetCookie(res, cookie)
 	http.Redirect(res, req, "/", http.StatusSeeOther)
+}
+
+func getCurrUser(res http.ResponseWriter, req *http.Request) string {
+	cookie, _ := req.Cookie("session")
+	row := db.QueryRow("SELECT USERNAME FROM SESSIONS WHERE SID = $1", cookie.Value)
+	err = row.Scan(&currUser)
+	if err != nil {
+		http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		panic(err)
+	}
+	return currUser
 }

@@ -2,39 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
     <title>pokefarm</title>
-    <style>
-        html, body, p {
-            padding: 0;
-            border: 0;
-            margin: 0;
-        }
-        body {
-            display: flex;
-            flex-flow: column nowrap;
-            justify-content: center;
-            align-items: left;
-            height: 40vh;
-        }
-        img:hover {
-            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
-        }
-        p {
-            margin-left: 2rem;
-            font-size: 2rem;
-            color: black;
-          }
-        .link {
-            font-size: 1rem;
-        }
-    </style>
 </head>
 <body>
 <p class="link"><a href="/logout">Logout</a></p>
-<p>My pokefarm<p>
+<p>Welcome to your PokeFarm, {{.CurrUser}}.<p>
 <p>
-{{range .}}
-    <a href="/pokefarm/read?ID={{.pokefarmID}}" target="pokemonDetails" ><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png"/></a>
+{{range .Pkmns}}
+    <a href="/pokefarm/read?uid={{.Uid}}" target="pokemonDetails" ><img class="pokesInPokefarm" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.PokedexID}}.png"/></a>
 {{end}}
 </p>
 <iframe name="pokemonDetails"
