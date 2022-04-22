@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 
 	_ "github.com/lib/pq"
@@ -15,6 +15,7 @@ import (
 var tpl *template.Template
 var db *sql.DB
 var err error
+
 var currUser string // keeps track of whos currently logged in so that the create/delete/update
 // functions can work properly
 
@@ -26,18 +27,13 @@ type Pokemon struct {
 	Level     int
 }
 
-type user struct {
-	username string
-	password []byte
-}
-
 func init() {
 	tpl = template.Must(template.ParseGlob("templates/*.gohtml"))
-	postgreConnString, err := ioutil.ReadFile("postgreConnString")
-	if err != nil {
-		panic(err)
+	if os.Getenv("ENV") == "PROD" {
+		db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	} else {
+		db, err = sql.Open("postgres", "postgres://postgres:password@database/pokefarm?sslmode=disable")
 	}
-	db, err = sql.Open("postgres", string(postgreConnString))
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +54,7 @@ func main() {
 	// imgs and css
 	http.Handle("/imgs/", http.StripPrefix("/imgs/", http.FileServer(http.Dir("./imgs"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
-	http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 func index(res http.ResponseWriter, req *http.Request) {

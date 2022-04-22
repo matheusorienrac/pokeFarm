@@ -29,7 +29,7 @@ func signup(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	println(len(hashPassword))
+	println("TESTANDO SE MUDOU")
 	q := `
 		INSERT INTO USERS (USERNAME, PASSWORD)
 		VALUES ($1, $2);

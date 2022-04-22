@@ -1,0 +1,7 @@
+CREATE TABLE POKEMONS(
+    uid SERIAL PRIMARY KEY,
+    pokedexid INT NOT NULL,
+    owner VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    level INT NOT NULL DEFAULT 1
+)

@@ -1,0 +1,15 @@
+FROM ubuntu:14.04
+
+WORKDIR /usr/src/migrate
+
+COPY ./migrations ./migrations
+COPY wait_and_migrate.sh ./
+
+# Install prerequisites
+RUN apt-get update && apt-get install -y \
+curl
+
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz;
+RUN mv migrate.linux-amd64 $GOPATH/bin/migrate;
+
+CMD sleep 600
