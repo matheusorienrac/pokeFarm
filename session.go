@@ -62,6 +62,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//to do: convert usernames to lowercase and only allow alphanumeric
 	username := req.FormValue("username")
 	password := req.FormValue("password")
 	var hashed_password string
